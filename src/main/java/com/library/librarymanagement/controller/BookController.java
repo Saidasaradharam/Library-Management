@@ -5,8 +5,12 @@ import com.library.librarymanagement.dto.BookResponse;
 import com.library.librarymanagement.service.BookService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +22,7 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
-    // POST /api/books
+    @PreAuthorize("hasRole('LIBRARIAN')")
     @PostMapping
     public ResponseEntity<BookResponse> createBook(@Valid @RequestBody BookRequest request) {
         BookResponse response = bookService.createBook(request);
@@ -27,8 +31,14 @@ public class BookController {
 
     // GET /api/books
     @GetMapping
-    public ResponseEntity<List<BookResponse>> getAllBooks() {
-        List<BookResponse> books = bookService.getAllBooks();
+    public ResponseEntity<Page<BookResponse>> searchBooks(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String authorFirstName,
+            // Default size 10, sort by title. Users can override via URL params.
+            @PageableDefault(size = 10, sort = "title") Pageable pageable) {
+
+        // Calls the updated service method for searching/pagination
+        Page<BookResponse> books = bookService.searchBooks(title, authorFirstName, pageable);
         return ResponseEntity.ok(books);
     }
 
@@ -39,7 +49,20 @@ public class BookController {
         return ResponseEntity.ok(book);
     }
 
-    // DELETE /api/books/{id}
+    // PATCH /api/books/{id}
+    @PreAuthorize("hasRole('LIBRARIAN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<BookResponse> updateBook(
+            @PathVariable Long id,
+            @Valid @RequestBody BookRequest request) {
+        // Assuming updateBook exists in BookService
+        BookResponse updatedBook = bookService.updateBook(id, request);
+        return ResponseEntity.ok(updatedBook);
+    }
+
+
+    // 5. DELETE: Restricted to LIBRARIAN role (Catalogue Management)
+    @PreAuthorize("hasRole('LIBRARIAN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);

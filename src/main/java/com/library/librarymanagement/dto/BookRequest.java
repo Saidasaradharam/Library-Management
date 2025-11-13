@@ -15,6 +15,6 @@ public class BookRequest {
     @NotNull(message = "Author ID is required to assign a book.")
     private Long authorId;
 
-    // Placeholder for Category
+    @NotNull(message = "Category ID is required")
     private Long categoryId;
 }

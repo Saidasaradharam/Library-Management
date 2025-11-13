@@ -26,4 +26,8 @@ public class Book extends Auditable {
     // One book can have many physical copies
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     private List<BookCopy> copies;
+
+    @ManyToOne // A book belongs to ONE category
+    @JoinColumn(name = "category_id")
+    private Category category;
 }
