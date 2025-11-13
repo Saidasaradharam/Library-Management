@@ -1,0 +1,20 @@
+package com.library.dto;
+
+import lombok.Data;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+@Data
+public class BookRequest {
+    @NotBlank(message = "Title is required")
+    private String title;
+
+    @NotBlank(message = "ISBN is required")
+    private String isbn;
+
+    @NotNull(message = "Author ID is required to assign a book.")
+    private Long authorId;
+
+    // Placeholder for Category
+    private Long categoryId;
+}
