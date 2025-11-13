@@ -8,6 +8,7 @@ import com.library.librarymanagement.repository.BookCopyRepository;
 import com.library.librarymanagement.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.library.librarymanagement.security.SecurityUtils;
 
 @Service
 public class BookCopyService {
@@ -43,7 +44,7 @@ public class BookCopyService {
         copy.setBook(book);
         copy.setInventoryNumber(request.getInventoryNumber());
         // Status defaults to AVAILABLE in the entity
-
+        copy.setCreatedBy(SecurityUtils.getCurrentUserLogin());
         // 3. Save and return
         return toResponse(bookCopyRepository.save(copy));
     }
