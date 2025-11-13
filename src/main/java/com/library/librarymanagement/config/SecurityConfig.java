@@ -35,6 +35,15 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    private static final String[] PUBLIC_URLS = {
+            "/api/auth/**",       // Registration & Login
+            "/api/books",         // Guest Search
+            "/swagger-ui/**",     // Swagger UI static files
+            "/v3/api-docs/**",    // Swagger API definition files
+            "/swagger-resources/**",
+            "/webjars/**"
+    };
+
     // Defining the Security Filter Chain
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -44,8 +53,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                         // Public paths
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/books").permitAll()
+                        .requestMatchers(PUBLIC_URLS).permitAll()
                         // Protected paths
                         .anyRequest().authenticated()
                 );
