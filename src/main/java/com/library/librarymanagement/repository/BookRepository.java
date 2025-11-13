@@ -17,14 +17,15 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     Page<Book> findByTitleContainingIgnoreCase(String title, Pageable pageable);
 
     /**
-     * Finds books by searching for the author's last name.
+     * Finds books by searching for the author's first name.
      * Used for the public catalog search feature.
-     * @param firstName The partial last name of the author.
+     * @param firstName The partial first name of the author.
      * @param pageable Contains pagination and sorting information.
      * @return A Page of Book entities.
      */
     Page<Book> findByAuthorFirstNameContainingIgnoreCase(String firstName, Pageable pageable);
 
-    // Note: The Page<Book> findAll(Pageable pageable) method is inherited from JpaRepository,
-    // which handles the default list-all-with-pagination case.
+    Page<Book> findByIsbnContaining(String isbn, Pageable pageable);
+
+    Page<Book> findByCategory_Id(Long categoryId, Pageable pageable);
 }

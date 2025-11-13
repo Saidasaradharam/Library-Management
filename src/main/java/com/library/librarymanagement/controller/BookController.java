@@ -34,11 +34,12 @@ public class BookController {
     public ResponseEntity<Page<BookResponse>> searchBooks(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String authorFirstName,
-            // Default size 10, sort by title. Users can override via URL params.
+            @RequestParam(required = false) String isbn, // NEW PARAMETER
+            @RequestParam(required = false) Long categoryId, // NEW PARAMETER
             @PageableDefault(size = 10, sort = "title") Pageable pageable) {
 
-        // Calls the updated service method for searching/pagination
-        Page<BookResponse> books = bookService.searchBooks(title, authorFirstName, pageable);
+        // Calls the service with all possible parameters
+        Page<BookResponse> books = bookService.searchBooks(title, authorFirstName, isbn, categoryId, pageable);
         return ResponseEntity.ok(books);
     }
 

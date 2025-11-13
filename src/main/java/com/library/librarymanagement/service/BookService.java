@@ -62,19 +62,30 @@ public class BookService {
         return toResponse(bookRepository.save(book));
     }
 
-    public Page<BookResponse> searchBooks(String title, String authorFirstName, Pageable pageable) {
+    public Page<BookResponse> searchBooks(String title, String authorFirstName, String isbn, Long categoryId, Pageable pageable) {
         Page<Book> booksPage;
 
-        if (title != null && !title.isEmpty()) {
+        // 1. Prioritize ISBN search (Most specific filter)
+        if (isbn != null && !isbn.isEmpty()) {
+            booksPage = bookRepository.findByIsbnContaining(isbn, pageable);
+        }
+        // 2. Next, prioritize Category search
+        else if (categoryId != null) {
+            booksPage = bookRepository.findByCategory_Id(categoryId, pageable);
+        }
+        // 3. Then, check Title search
+        else if (title != null && !title.isEmpty()) {
             booksPage = bookRepository.findByTitleContainingIgnoreCase(title, pageable);
-        } else if (authorFirstName != null && !authorFirstName.isEmpty()) {
+        }
+        // 4. Finally, check Author search
+        else if (authorFirstName != null && !authorFirstName.isEmpty()) {
             booksPage = bookRepository.findByAuthorFirstNameContainingIgnoreCase(authorFirstName, pageable);
-        } else {
-            // Default: List all books with pagination
+        }
+        // 5. Default: List all books with pagination
+        else {
             booksPage = bookRepository.findAll(pageable);
         }
 
-        // Map Page<Book> to Page<BookResponse>
         return booksPage.map(this::toResponse);
     }
 
