@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class AuthorController {
     private AuthorService authorService;
 
     // POST /api/authors
+    @PreAuthorize("hasRole('LIBRARIAN')")
     @PostMapping
     public ResponseEntity<AuthorResponse> createAuthor(@Valid @RequestBody AuthorRequest request) {
         AuthorResponse response = authorService.createAuthor(request);
@@ -40,6 +42,7 @@ public class AuthorController {
     }
 
     // PUT /api/authors/{id}
+    @PreAuthorize("hasRole('LIBRARIAN')")
     @PutMapping("/{id}")
     public ResponseEntity<AuthorResponse> updateAuthor(
             @PathVariable Long id,
@@ -49,9 +52,11 @@ public class AuthorController {
     }
 
     // DELETE /api/authors/{id}
+    @PreAuthorize("hasRole('LIBRARIAN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAuthor(@PathVariable Long id) {
         authorService.deleteAuthor(id);
         return ResponseEntity.noContent().build();
     }
+
 }

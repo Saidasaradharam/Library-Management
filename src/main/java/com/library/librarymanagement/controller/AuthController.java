@@ -26,6 +26,7 @@ public class AuthController {
     // Login endpoint placeholder
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@Valid @RequestBody AuthRequest request) {
-        return ResponseEntity.ok("Received credentials.");
+        String token = authService.login(request);
+        return ResponseEntity.ok(token);
     }
 }
