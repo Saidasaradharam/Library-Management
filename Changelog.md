@@ -8,3 +8,8 @@
 - Created necessary DTOs for Author and Book entities (Request/Response) for a clean API contract.
 - Implemented Service and Controller layers for both Author and Book entities.
 - Implemented full REST APIs for the Author and Book.
+
+[Added User Entity and Implemented Registration via REST API](https://github.com/Saidasaradharam/Library-Management/commit/8428d83c04db3e04e1ae596022ff466003584451)
+- Created User entity with fields: username, password, roles(Enum)
+- Implemented UserRepository for CRUD operations on User entity.
+- Developed AuthService to handle user registration logic, and included password encoding.
