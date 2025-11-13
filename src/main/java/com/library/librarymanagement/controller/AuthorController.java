@@ -1,8 +1,8 @@
-package com.library.controller;
+package com.library.librarymanagement.controller;
 
-import com.library.dto.AuthorRequest;
-import com.library.dto.AuthorResponse;
-import com.library.service.AuthorService;
+import com.library.librarymanagement.dto.AuthorRequest;
+import com.library.librarymanagement.dto.AuthorResponse;
+import com.library.librarymanagement.service.AuthorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

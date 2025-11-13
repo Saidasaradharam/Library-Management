@@ -1,8 +1,8 @@
-package com.library.controller;
+package com.library.librarymanagement.controller;
 
-import com.library.dto.BookRequest;
-import com.library.dto.BookResponse;
-import com.library.service.BookService;
+import com.library.librarymanagement.dto.BookRequest;
+import com.library.librarymanagement.dto.BookResponse;
+import com.library.librarymanagement.service.BookService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

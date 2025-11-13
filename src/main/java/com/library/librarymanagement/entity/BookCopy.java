@@ -1,6 +1,6 @@
-package com.library.entity;
+package com.library.librarymanagement.entity;
 
-import com.library.common.Auditable;
+import com.library.librarymanagement.common.Auditable;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

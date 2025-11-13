@@ -1,4 +1,4 @@
-package com.library.common;
+package com.library.librarymanagement.common;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
