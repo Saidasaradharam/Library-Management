@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/loans")
 public class LoanController {
@@ -36,5 +38,21 @@ public class LoanController {
             return ResponseEntity.ok("Return processed. Fine accrued: €" + String.format("%.2f", fine));
         }
         return ResponseEntity.ok("Return processed. No fines.");
+    }
+
+    /** Admin Report 1: Get all current active loans (BORROWED, RESERVED, OVERDUE) */
+    @PreAuthorize("hasRole('LIBRARIAN')")
+    @GetMapping("/report/active")
+    public ResponseEntity<List<Loan>> getCurrentLoansReport() {
+        List<Loan> activeLoans = loanService.getCurrentActiveLoans();
+        return ResponseEntity.ok(activeLoans);
+    }
+
+    /** Admin Report 2: Get all loans past their due date */
+    @PreAuthorize("hasRole('LIBRARIAN')")
+    @GetMapping("/report/overdue")
+    public ResponseEntity<List<Loan>> getOverdueLoans() {
+        List<Loan> overdueLoans = loanService.getOverdueLoansReport();
+        return ResponseEntity.ok(overdueLoans);
     }
 }

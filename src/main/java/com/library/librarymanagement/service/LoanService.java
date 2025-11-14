@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -113,5 +114,23 @@ public class LoanService {
             return daysOverdue * FINE_RATE_PER_DAY;
         }
         return 0.0;
+    }
+
+    // Admin Reports
+    public List<Loan> getCurrentActiveLoans() {
+        List<LoanStatus> activeStatuses = List.of(
+                LoanStatus.BORROWED,
+                LoanStatus.RESERVED,
+                LoanStatus.OVERDUE // Overdue is still an active loan
+        );
+
+        return loanRepository.findByStatusIn(activeStatuses);
+    }
+
+    public List<Loan> getOverdueLoansReport() {
+        return loanRepository.findByStatusAndDueDateBefore(
+                LoanStatus.BORROWED, // Find active BORROWED loans
+                LocalDate.now()      // Where the due date is before today
+        );
     }
 }
