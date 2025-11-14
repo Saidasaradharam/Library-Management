@@ -37,3 +37,12 @@
 [Implemented Refresh token logic](https://github.com/Saidasaradharam/Library-Management/commit/4d95fa077a0e6ea9de1fc518404517f9cbc25ef1)
 - Created a TokenResponse record which has both AccessToken and RefreshToken with individual expiry dates.
 - Every time user fetches access token with his refresh token, a new refresh token is generated and stored in the database.
+
+[Added Notification Service to log the info](https://github.com/Saidasaradharam/Library-Management/commit/ecbd70ed598e411b0d62983ff7e0572924cf5334)
+- Added NotificationService with a scheduled job that runs daily at 3 AM.
+- Implemented logic to detect due-soon loans (due tomorrow) and overdue loans (past due date).
+- Logs simulated notification messages for members with upcoming or overdue returns.
+- Automatic status update to OVERDUE for loans that have passed the due date will be done.
+
+[Added admin reports](https://github.com/Saidasaradharam/Library-Management/commit/404d8143d60d9f9eee0f602d5b5c36339a2adddf)
+- Active Loans and Overdue Loans report are implemented.
