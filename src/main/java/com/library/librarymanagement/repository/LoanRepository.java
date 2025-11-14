@@ -2,7 +2,7 @@ package com.library.librarymanagement.repository;
 
 import com.library.librarymanagement.entity.BookCopy;
 import com.library.librarymanagement.entity.Loan;
-import com.library.librarymanagement.entity.LoanStatus; // CRITICAL IMPORT
+import com.library.librarymanagement.entity.LoanStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.domain.Pageable;
 
