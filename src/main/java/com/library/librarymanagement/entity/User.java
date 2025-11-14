@@ -24,4 +24,7 @@ public class User extends Auditable {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role = UserRole.MEMBER;
+
+    @Column(length = 500)
+    private String refreshToken;
 }

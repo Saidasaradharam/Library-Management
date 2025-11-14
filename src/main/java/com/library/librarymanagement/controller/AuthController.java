@@ -25,8 +25,19 @@ public class AuthController {
 
     // Login endpoint placeholder
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@Valid @RequestBody AuthRequest request) {
-        String token = authService.login(request);
-        return ResponseEntity.ok(token);
+    public ResponseEntity<AuthService.TokenResponse> loginUser(@Valid @RequestBody AuthRequest request) {
+
+        AuthService.TokenResponse tokens = authService.login(request);
+        return ResponseEntity.ok(tokens);
     }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthService.TokenResponse> refresh(@RequestBody String refreshToken) {
+
+        // Pass the token to the service for validation and renewal
+        AuthService.TokenResponse newTokens = authService.refreshToken(refreshToken);
+
+        return ResponseEntity.ok(newTokens);
+    }
+
 }

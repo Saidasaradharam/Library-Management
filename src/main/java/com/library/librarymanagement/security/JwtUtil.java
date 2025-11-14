@@ -19,8 +19,31 @@ public class JwtUtil {
     @Value("${jwt.secret}")
     private String secret;
 
-    private Key getSigningKey() {
+    public Key getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes());
+    }
+
+    public String generateAccessToken(String username, String role) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", role);
+        // Expiration time of 1 hour (short-lived)
+        return createToken(claims, username, 1000 * 60 * 60);
+    }
+
+    public String generateRefreshToken(String username) {
+        // Expiration time of 30 days (long-lived)
+        return createToken(new HashMap<>(), username, 1000 * 60 * 60 * 24 * 30);
+    }
+
+
+    private String createToken(Map<String, Object> claims, String subject, long expirationTimeMs) {
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTimeMs))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 
     public String generateToken(String username, String role) {

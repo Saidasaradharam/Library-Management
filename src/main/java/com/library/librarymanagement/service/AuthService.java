@@ -2,7 +2,9 @@ package com.library.librarymanagement.service;
 
 import com.library.librarymanagement.dto.AuthRequest;
 import com.library.librarymanagement.security.JwtUtil;
-import org.springframework.security.authentication.AuthenticationManager; 
+import io.jsonwebtoken.Jwts;
+import jakarta.transaction.Transactional;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken; 
 import com.library.librarymanagement.entity.User;
 import com.library.librarymanagement.repository.UserRepository;
@@ -25,6 +27,8 @@ public class AuthService {
     @Autowired
     private JwtUtil jwtUtil;
 
+    public record TokenResponse(String accessToken, String refreshToken) {}
+
     public User registerNewUser(AuthRequest request) {
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
             throw new RuntimeException("Username is already taken!");
@@ -39,13 +43,54 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    public String login(AuthRequest request) {
+    @Transactional
+    public TokenResponse login(AuthRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
+
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        return jwtUtil.generateToken(user.getUsername(), user.getRole().name());
+        // Generate both tokens
+        String accessToken = jwtUtil.generateAccessToken(user.getUsername(), user.getRole().name());
+        String refreshToken = jwtUtil.generateRefreshToken(user.getUsername());
+
+        user.setRefreshToken(refreshToken);
+        userRepository.save(user);
+
+        return new TokenResponse(accessToken, refreshToken);
+    }
+
+    @Transactional
+    public TokenResponse refreshToken(String oldRefreshToken) {
+
+        String username;
+        try {
+            username = Jwts.parserBuilder()
+                    .setSigningKey(jwtUtil.getSigningKey()) // Assume you add getSigningKey() to JwtUtil
+                    .build()
+                    .parseClaimsJws(oldRefreshToken)
+                    .getBody()
+                    .getSubject();
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            username = e.getClaims().getSubject();
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid refresh token signature or format.");
+        }
+
+        // Finding user and validating the stored token
+        User user = userRepository.findByUsername(username)
+                .filter(u -> oldRefreshToken.equals(u.getRefreshToken()))
+                .orElseThrow(() -> new RuntimeException("Invalid refresh token or session expired."));
+        // Generate new tokens
+        String newAccessToken = jwtUtil.generateAccessToken(user.getUsername(), user.getRole().name());
+        String newRefreshToken = jwtUtil.generateRefreshToken(user.getUsername());
+
+        // Invalidating the old token and save the new one
+        user.setRefreshToken(newRefreshToken);
+        userRepository.save(user);
+
+        return new TokenResponse(newAccessToken, newRefreshToken);
     }
 }
