@@ -123,7 +123,7 @@ docker build -t library-management .
 ### 7.2 Run the Application with Docker Compose (Recommended)
 
 ```
-docker-compose up --build
+docker compose up --build
 ```
 
 ### 7.3 Stop Containers
